@@ -2,26 +2,6 @@
 REQUIRE './SQLConnection.php';
 REQUIRE './APIKeys.php';
 
-function getCoordinatesAddress($AzureKey, $Latitude, $Longitude)
-{
-    if ($Latitude != "" && $Longitude != "")
-    {
-        $url = "https://atlas.microsoft.com/search/address/reverse/json?subscription-key=" . $AzureKey . "&api-version=1.0&query=" . $Latitude . "," . $Longitude . "&returnSpeedLimit=true";
-
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_HTTPGET, true);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $response_json = curl_exec($ch);
-        curl_close($ch);
-        $response=json_decode($response_json, true);
-
-        if (isset($response["addresses"][0]["address"]["freeformAddress"]))
-        {
-            return $response["addresses"][0]["address"]["freeformAddress"];
-        }
-    }
-}
-
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
   }
@@ -72,7 +52,7 @@ if ($conn->connect_error) {
                 var coordinatesString = obj.innerHTML;
                 var coordinatesArray = coordinatesString.split(",");
 
-                $.ajax({url: "./GetCoordinateAPIAddress.php?latitude=" + coordinatesArray[0] + "&longitutde=" + coordinatesArray[1], success: function(result){
+                $.ajax({url: "./GetCoordinateAPIAddress.php?latitude=" + coordinatesArray[0] + "&longitude=" + coordinatesArray[1], success: function(result){
                     obj.innerHTML = result;
                 }});
 

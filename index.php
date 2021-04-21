@@ -14,7 +14,8 @@
       // prompted by your browser. If you see the error "The Geolocation service
       // failed.", it means you probably did not give permission for the browser to
       // locate you.
-      let map, infoWindow, lastKnownDetails, lastStartDetails, lastPositionMarker;
+      let map, infoWindow;
+      var lastKnownDetails, lastStartDetails, lastPositionMarker, lastStartPositionMarker;
 
       function centerMapAtLocation(lat, lng)
       {
@@ -28,17 +29,88 @@
       }
 
       function addMarker(latitude, longitude, titleMsg = ""){
-        new google.maps.Marker({
+        return new google.maps.Marker({
           position: { lat: parseFloat(latitude), lng: parseFloat(longitude) },
           map,
           title: titleMsg,
         });
       }
 
-      function getCurrentJourneyInfo(){
+      function getLastJourneyStartDetails()
+      {
+
         $.ajax({url: "./GetCurrentJourney.php", success: function(result){
-          lastStartDetails = JSON.parse(result);
+          window.lastStartDetails = JSON.parse(result);
+        }});
+      }
+
+      function setLastJourneyStartDetails()
+      {
+        if (lastStartPositionMarker != undefined)
+        {
+          if (lastStartPositionMarker.getPosition().lat() != window.lastStartDetails["startLatitude"] && 
+            lastStartPositionMarker.getPosition().lng() != window.lastStartDetails["startLongitude"])
+          {
+            lastStartPositionMarker.setMap(null);
+          }
+        }
+
+        if (window.lastStartDetails == undefined)
+        {
+          return;
+        }
+
+        if (lastStartPositionMarker == undefined)
+        {
+          lastStartPositionMarker = addMarker(window.lastStartDetails["startLatitude"], window.lastStartDetails["startLongitude"]);
           moveToLocation(lastStartDetails["startLatitude"], lastStartDetails["startLongitude"]);
+        }
+
+        $("#start_latitude").text(window.lastStartDetails["startLatitude"]);
+        $("#start_longitude").text(window.lastStartDetails["startLongitude"]);
+        $("#start_time").text(window.lastStartDetails["startTime"]);
+
+        $.ajax({url: "./GetCoordinateAPIAddress.php?latitude=" + window.lastStartDetails["startLatitude"] + "&longitude=" + window.lastStartDetails["startLongitude"], success: function(result){
+          $("#start_address").text(result);
+        }});
+      }
+      
+      function getLastKnownDetails()
+      {
+        $.ajax({url: "./GetCurrentJourneyInstanceInfo.php", success: function(result){
+          window.lastKnownDetails = JSON.parse(result);
+        }});
+      }
+
+      function setLastKnownPosition()
+      {
+        if (lastPositionMarker != undefined)
+        {
+          if (lastPositionMarker.getPosition().lat() != window.lastKnownDetails["latitude"] && 
+            lastPositionMarker.getPosition().lng() != window.lastKnownDetails["longitude"])
+          {
+            lastPositionMarker.setMap(null);
+          }
+        }
+
+        if (window.lastKnownDetails == undefined)
+        {
+          return;
+        }
+
+        if (lastPositionMarker == undefined)
+        {
+          lastPositionMarker = addMarker(window.lastKnownDetails["latitude"], window.lastKnownDetails["longitude"]);
+        }
+
+        $("#current_latitude").text(window.lastKnownDetails["latitude"]);
+        $("#current_longitude").text(window.lastKnownDetails["longitude"]);
+        $("#current_rpm").text(window.lastKnownDetails["RPM"]);
+        $("#current_speed").text(window.lastKnownDetails["speed"]);
+        $("#current_time").text(window.lastKnownDetails["time"]);
+
+        $.ajax({url: "./GetCoordinateAPIAddress.php?latitude=" + window.lastKnownDetails["latitude"] + "&longitude=" + window.lastKnownDetails["longitude"], success: function(result){
+          $("#current_address").text(result);
         }});
       }
 
@@ -47,27 +119,17 @@
         setInterval(
           function(){ 
             getLastKnownDetails(); 
-
-            if (lastPositionMarker != undefined)
-            {
-              lastPositionMarker.setMap(null);
-            }
-
-            if (lastKnownDetails != undefined)
-            {
-              console.log("Adding new marked!")
-              lastPositionMarker = addMarker(lastKnownDetails["latitude"], lastKnownDetails["longitude"]);
-            }
-
+            setLastKnownPosition();
           }, 2000);
       }
 
-      function getLastKnownDetails()
+      function updateLastJourneyStartDetails()
       {
-        $.ajax({url: "./GetCurrentJourneyInstanceInfo.php", success: function(result){
-          lastKnownDetails = JSON.parse(result);
-          console.log(lastKnownDetails);
-        }});
+        setInterval(
+          function(){ 
+            getLastJourneyStartDetails(); 
+            setLastJourneyStartDetails();
+          }, 2000);
       }
 
       function initMap() {
@@ -106,7 +168,7 @@
           }
         });
 
-        var journeyJSON = getCurrentJourneyInfo();
+        updateLastJourneyStartDetails();
         updateLastKnownPosition();
       }
 
@@ -119,6 +181,7 @@
         );
         infoWindow.open(map);
       }
+
     </script>
   </head>
   <body>
@@ -133,22 +196,22 @@
       async
     ></script>
 
-    <div>
-        <h2>Start Location</h2>
-        <p>Latitude: </p>
-        <p>Longitude: </p>
-        <p>Time: </p>
-        <p>Physical Address: </p>
+    <div class="journeyData">
+        <h2>Last Recored Start Location</h2>
+        <p>Latitude: <span id="start_latitude"></span></p>
+        <p>Longitude: <span id="start_longitude"></span></p>
+        <p>Time: <span id="start_time"></span></p>
+        <p>Physical Address: <span id="start_address"></span></p>
     </div>    
 
-    <div>
-        <h2>Current Location</h2>
-        <p>Speed: 60 KPH</p>
-        <p>RPM: 2500 RPM</p>
-        <p>Latitude: </p>
-        <p>Longitude: </p>
-        <p>Time: </p>
-        <p>Physical Address: </p>
+    <div class="journeyData">
+        <h2>Last Recorded Location</h2>
+        <p>Speed: <span id="current_speed"></span> KPH</p>
+        <p>RPM: <span id="current_rpm"></span> RPM</p>
+        <p>Latitude: <span id="current_latitude"></span></p>
+        <p>Longitude: <span id="current_longitude"></span></p>
+        <p>Time: <span id="current_time"></span></p>
+        <p>Physical Address: <span id="current_address"></span></p>
     </div>    
 
     <p><em>Potentially add something about speeding?</em></p>

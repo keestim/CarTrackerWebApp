@@ -1,7 +1,7 @@
 <?php
     REQUIRE './APIKeys.php';
 
-    $longitutde = $_GET['longitutde'];
+    $longitutde = $_GET['longitude'];
     $latitude = $_GET['latitude'];
 
     function getCoordinatesAddress($AzureKey, $Latitude, $Longitude)

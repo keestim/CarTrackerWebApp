@@ -58,18 +58,12 @@
 
         function addNewMarker(map, latitude, longitude)
         {
-            console.log("New Marker!");
-            console.log(latitude + "|" + longitude);
-
-            //consider plotting speed!
-
             new google.maps.Marker({
                 position: { lat: parseFloat(latitude), lng: parseFloat(longitude) },
                 map,
-                title: "Hello World!",
+                title: "Start Location",
             });
         }
-
 
         // Note: This example requires that you consent to location sharing when
         // prompted by your browser. If you see the error "The Geolocation service

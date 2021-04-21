@@ -70,3 +70,11 @@ th, td {
     padding-left: 0.5%;
     padding-right: 0.5%;
   }
+
+.journeyData 
+{
+  width: 40%;
+  float: left;
+  padding-left: 5%;
+  padding-right: 5%;
+}
