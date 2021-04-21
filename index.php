@@ -90,6 +90,7 @@
             lastPositionMarker.getPosition().lng() != window.lastKnownDetails["longitude"])
           {
             lastPositionMarker.setMap(null);
+	    lastPositionMarker = undefined;
           }
         }
 
