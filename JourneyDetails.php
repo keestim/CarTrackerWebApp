@@ -25,14 +25,16 @@
 
 
     $conn->close();
-
 ?>
 
 <!DOCTYPE html>
 <html>
     <head>
         <link rel="stylesheet" href="./style/index.css">
+
         <script src="./scripts/jquery-3.6.0.min.js"></script>
+        <script src="./scripts/loadhtml.js"></script>
+
 
         <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
 
@@ -78,7 +80,7 @@
         function initMap() {
             const map = new google.maps.Map(document.getElementById("map"), {
             center: { lat: -37.8072, lng: 145.154 },
-            zoom: 12,
+            zoom: 14,
             });
 
             infoWindow = new google.maps.InfoWindow();
@@ -127,6 +129,8 @@
         </script>
     </head>
     <body>
+        <div class="navbar" id="navbar">
+        </div>
         <div id="map"></div>
 
         <!-- Async script executes immediately and must be after any DOM elements used in callback. -->

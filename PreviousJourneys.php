@@ -62,6 +62,25 @@ if ($conn->connect_error) {
 
     <script src="./scripts/jquery-3.6.0.min.js"></script>
     <script src="./scripts/loadhtml.js"></script>
+
+    <script>
+        $(document).ready(function (e)
+        {
+            $('.CoordinatesAddress').each(function(i, obj) {
+                console.log(obj);
+
+                var coordinatesString = obj.innerHTML;
+                var coordinatesArray = coordinatesString.split(",");
+
+                $.ajax({url: "./GetCoordinateAPIAddress.php?latitude=" + coordinatesArray[0] + "&longitutde=" + coordinatesArray[1], success: function(result){
+                    obj.innerHTML = result;
+                }});
+
+            });
+        });
+
+    </script>
+
   </head>
   <body>
     <div class="navbar" id="navbar">
@@ -84,19 +103,19 @@ if ($conn->connect_error) {
 
     <?php 
       $result = $conn->query($sql);
-  
+
       if ($result->num_rows > 0) {
         // output data of each row
         while($row = $result->fetch_assoc()) {
-            echo "<tr>";
+            echo "<tr id= " . $row["journeyID"] . ">";
             echo "<td>" . $row["journeyID"] . "</td>";
             echo "<td>" . $row["startLatitude"] . "</td>";
             echo "<td>" . $row["startLongitude"] . "</td>";
-            echo "<td>" . getCoordinatesAddress($AzureKey, $row["startLatitude"], $row["startLongitude"]) . "</td>";
+            echo "<td class='CoordinatesAddress'>" . $row["startLatitude"] . "," . $row["startLongitude"] . "</td>";
             echo "<td>" . $row["startTime"] . "</td>";
             echo "<td>" . $row["endLatitude"] . "</td>";
             echo "<td>" . $row["endLongitude"] . "</td>";
-            echo "<td>" . getCoordinatesAddress($AzureKey, $row["endLatitude"], $row["endLongitude"]) . "</td>";
+            echo "<td class='CoordinatesAddress'>" . $row["endLatitude"] . "," . $row["endLongitude"] . "</td>";
             echo "<td>" . $row["endTime"] . "</td>";
             echo "<td>" . $row["speedingCount"] . "</td>";
             echo "<td><a href='./JourneyDetails.php?journeyID=" . $row["journeyID"] ."'>View More Info</a></td>"; 
@@ -105,7 +124,6 @@ if ($conn->connect_error) {
       } else {
         echo "0 results";
       }
-      
       
       $conn->close();
     ?>

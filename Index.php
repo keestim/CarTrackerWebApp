@@ -1,63 +1,3 @@
-<?php
-REQUIRE './SQLConnection.php';
-// Check connection
-
-if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
-}
-
-$sql = 
-  " SELECT 
-      JourneyDetails.*, MaxJourneys.startLatitude, MaxJourneys.startLongitude
-    FROM JourneyDetails 
-    INNER JOIN (
-      SELECT MAX(Journeys.journeyID) as journeyID, Journeys.startLatitude, Journeys.startLongitude FROM Journeys) as MaxJourneys 
-    ON JourneyDetails.journeyID = MaxJourneys.journeyID ";
-
-$sql = "SELECT MAX(Journeys.journeyID) as journeyID, Journeys.startLatitude, Journeys.startLongitude FROM Journeys";
-
-$sql = "SELECT 
-JourneyDetails.journeyID, 
-JourneyDetails.latitude as endLatitude, 
-JourneyDetails.longitude as endLongitude,
-JourneyDetails.time as endTime 
-FROM 
-JourneyDetails
-INNER JOIN (
-SELECT 
-    JourneyDetails.journeyID, MAX(JourneyDetails.time) as maxTime 
-FROM 
-    JourneyDetails
-GROUP BY
-    JourneyDetails.journeyID) AS MaxTimeSelection 
-ON 
-JourneyDetails.journeyID = MaxTimeSelection.journeyID AND 
-JourneyDetails.time = MaxTimeSelection.maxTime";
-
-print($sql);
-
-$result = $conn->query($sql);
-
-if ($result->num_rows > 0) {
-  // output data of each row
-  while($row = $result->fetch_assoc()) {
-    echo print_r($row) . "<br/>";
-
-    //$latitude = $row["startLatitude"];
-    //$longitude = $row["startLongitude"];
-
-    //echo "id: " . $row["journeyID"]. " | latitude : " . $row["latitude"]. " | longitude: " . $row["longitude"] . " | speed: " . $row["speed"] . "<br>";
-  }
-} else {
-  echo "0 results";
-}
-
-
-$conn->close();
-
-?>
-
-
 <!DOCTYPE html>
 <html>
   <head>
@@ -74,18 +14,65 @@ $conn->close();
       // prompted by your browser. If you see the error "The Geolocation service
       // failed.", it means you probably did not give permission for the browser to
       // locate you.
-      let map, infoWindow;
+      let map, infoWindow, lastKnownDetails, lastStartDetails, lastPositionMarker;
+
+      function centerMapAtLocation(lat, lng)
+      {
+        const center = new google.maps.LatLng(lat, lng);
+        map.panTo(center);
+      }
+
+      function moveToLocation(lat, lng){
+        centerMapAtLocation(lat, lng);
+        addMarker(lat, lng);
+      }
+
+      function addMarker(latitude, longitude, titleMsg = ""){
+        new google.maps.Marker({
+          position: { lat: parseFloat(latitude), lng: parseFloat(longitude) },
+          map,
+          title: titleMsg,
+        });
+      }
+
+      function getCurrentJourneyInfo(){
+        $.ajax({url: "./GetCurrentJourney.php", success: function(result){
+          lastStartDetails = JSON.parse(result);
+          moveToLocation(lastStartDetails["startLatitude"], lastStartDetails["startLongitude"]);
+        }});
+      }
+
+      function updateLastKnownPosition()
+      {
+        setInterval(
+          function(){ 
+            getLastKnownDetails(); 
+
+            if (lastPositionMarker != undefined)
+            {
+              lastPositionMarker.setMap(null);
+            }
+
+            if (lastKnownDetails != undefined)
+            {
+              console.log("Adding new marked!")
+              lastPositionMarker = addMarker(lastKnownDetails["latitude"], lastKnownDetails["longitude"]);
+            }
+
+          }, 2000);
+      }
+
+      function getLastKnownDetails()
+      {
+        $.ajax({url: "./GetCurrentJourneyInstanceInfo.php", success: function(result){
+          lastKnownDetails = JSON.parse(result);
+          console.log(lastKnownDetails);
+        }});
+      }
 
       function initMap() {
-        const map = new google.maps.Map(document.getElementById("map"), {
-          center: { lat: -37.8072, lng: 145.154 },
-          zoom: 12,
-        });
-
-        new google.maps.Marker({
-          position: { lat: -37.8072, lng: 145.154 },
-          map,
-          title: "Hello World!",
+        map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 14,
         });
 
         infoWindow = new google.maps.InfoWindow();
@@ -118,6 +105,9 @@ $conn->close();
             handleLocationError(false, infoWindow, map.getCenter());
           }
         });
+
+        var journeyJSON = getCurrentJourneyInfo();
+        updateLastKnownPosition();
       }
 
       function handleLocationError(browserHasGeolocation, infoWindow, pos) {
@@ -142,5 +132,26 @@ $conn->close();
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBedQ99BuDCvtKbnHOX9haF-EtkpMJS8wk&callback=initMap&libraries=&v=weekly"
       async
     ></script>
+
+    <div>
+        <h2>Start Location</h2>
+        <p>Latitude: </p>
+        <p>Longitude: </p>
+        <p>Time: </p>
+        <p>Physical Address: </p>
+    </div>    
+
+    <div>
+        <h2>Current Location</h2>
+        <p>Speed: 60 KPH</p>
+        <p>RPM: 2500 RPM</p>
+        <p>Latitude: </p>
+        <p>Longitude: </p>
+        <p>Time: </p>
+        <p>Physical Address: </p>
+    </div>    
+
+    <p><em>Potentially add something about speeding?</em></p>
+
   </body>
 </html>
