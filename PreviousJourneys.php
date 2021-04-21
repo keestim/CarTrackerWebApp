@@ -97,7 +97,14 @@ if ($conn->connect_error) {
             echo "<td>" . $row["endLongitude"] . "</td>";
             echo "<td class='CoordinatesAddress'>" . $row["endLatitude"] . "," . $row["endLongitude"] . "</td>";
             echo "<td>" . $row["endTime"] . "</td>";
-            echo "<td>" . $row["speedingCount"] . "</td>";
+            echo "<td>" . $row["speedingCount"];
+            
+            if ($row["speedingCount"] > 0)
+            {
+                echo "<a href='./SpeedingIncidents.php?journeyID=" . $row["journeyID"] . "'><p>View Incidents</p></a>";
+            }
+            
+            echo "</td>";
             echo "<td><a href='./JourneyDetails.php?journeyID=" . $row["journeyID"] ."'>View More Info</a></td>"; 
             echo "</tr>";
         }

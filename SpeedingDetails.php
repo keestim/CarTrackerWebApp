@@ -1,51 +1,92 @@
+<?php
+    REQUIRE './SQLConnection.php';
+
+    $speedingOccuranceID = $_GET["speedingOccuranceID"];
+
+    $sql = "SELECT SpeedingOccurances.* 
+    FROM 
+        SpeedingOccurances  
+    WHERE 
+        SpeedingOccurances.speedingOccuranceID = " . $speedingOccuranceID;
+
+    $result = $conn->query($sql);
+            
+    if ($result->num_rows > 0) {
+        // output data of each row
+        while($row = $result->fetch_assoc()) {
+            $speed = $row["speed"];
+            $speedLimit = $row["speedLimit"];
+            $RPM = $row["RPM"];
+            $time = $row["time"];
+            $longitude = $row["longitude"]; 
+            $latitude = $row["latitude"]; 
+
+        }
+    } else {
+    echo "0 results";
+    }
+
+    $conn->close();
+?>
+
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="./style/index.css">
-
-        <script src="./scripts/jquery-3.6.0.min.js"></script>
-        <script src="./scripts/loadhtml.js"></script>
-
-
         <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
-
+        <script src="./scripts/jquery-3.6.0.min.js"></script>
         <link rel="stylesheet" href="./style/index.css">
 
         <script>
-        function getLocationData(map)
+
+        let map, infoWindow;
+
+        function centerMapAtLocation(lat, lng)
         {
-            var journeyID = location.search.split('journeyID=')[1];
-
-            console.log(journeyID);
-
-            $.ajax({url: "./GetJourneyLocations.php?journeyID=" + journeyID, success: function(result){
-                var locationsArray = JSON.parse(result);
-                
-                locationsArray.forEach(
-                    element => addNewMarker(map, element[0], element[1])   
-                );
-            }});
+            const center = new google.maps.LatLng(lat, lng);
+            map.panTo(center);
         }
 
-        function addNewMarker(map, latitude, longitude)
+        function addNewMarker(latitude, longitude)
         {
             new google.maps.Marker({
                 position: { lat: parseFloat(latitude), lng: parseFloat(longitude) },
+                center: { lat: -37.8072, lng: 145.154 },
                 map,
                 title: "Start Location",
             });
+        }
+
+        //new server script to get speeding location!
+        function getLocationData()
+        {
+            var speedingOccuranceID = location.search.split('speedingOccuranceID=')[1];
+
+            console.log(speedingOccuranceID);
+
+            $.ajax({url: "./GetSpeedingLocation.php?speedingOccuranceID=" + speedingOccuranceID, success: function(result){
+                console.log(result);
+
+                var locationsArray = JSON.parse(result);
+                
+                locationsArray.forEach(function(element){
+                    console.log("Long" + element[1]);
+                    addNewMarker(element[0], element[1]);   
+                    centerMapAtLocation(element[0], element[1]);
+                    }
+                );
+            }});
         }
 
         // Note: This example requires that you consent to location sharing when
         // prompted by your browser. If you see the error "The Geolocation service
         // failed.", it means you probably did not give permission for the browser to
         // locate you.
-        let map, infoWindow;
+
 
         function initMap() {
-            const map = new google.maps.Map(document.getElementById("map"), {
-            center: { lat: -37.8072, lng: 145.154 },
-            zoom: 14,
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: -37.8072, lng: 145.154 },
+                zoom: 14,
             });
 
             infoWindow = new google.maps.InfoWindow();
@@ -79,7 +120,7 @@
             }
             });
 
-            getLocationData(map);
+            getLocationData();
         }
 
         function handleLocationError(browserHasGeolocation, infoWindow, pos) {
@@ -94,8 +135,6 @@
         </script>
     </head>
     <body>
-        <div class="navbar" id="navbar">
-        </div>
         <div id="map"></div>
 
         <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
@@ -104,8 +143,28 @@
         async
         ></script>
 
-    <iframe src="./TestGraphs.php?journeyID=<?php echo $_GET['journeyID']; ?>&graphtype=speed"></iframe>
-    <iframe src="./TestGraphs.php?journeyID=<?php echo $_GET['journeyID']; ?>&graphtype=rpm"></iframe>
+        <div class="attrInfo">
+            <h2>Speed: <?php echo $speed; ?> KPH</h2>
+        </div>
 
+        <div class="attrInfo">
+            <h2>Speed Limit: <?php echo $speedLimit; ?> KPH</h2>
+        </div>
+
+        <div class="attrInfo">
+            <h2>RPM: <?php echo $RPM; ?> RPM</h2>
+        </div>
+
+        <div class="attrInfo">
+            <h2>Latitude: <?php echo $latitude; ?></h2>
+        </div>
+
+        <div class="attrInfo">
+            <h2>Longitude: <?php echo $longitude; ?></h2>
+        </div>
+        
+        <div class="attrInfo">
+            <h2>Time: <?php echo $time; ?></h2>
+        </div>
     </body>
 </html>

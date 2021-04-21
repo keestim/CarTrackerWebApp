@@ -78,3 +78,11 @@ th, td {
   padding-left: 5%;
   padding-right: 5%;
 }
+
+.attrInfo
+{
+  float: left;
+  width: auto;
+  padding-left: 0.5%;
+  padding-right: 0.5%;
+}
