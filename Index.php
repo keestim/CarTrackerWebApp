@@ -62,8 +62,13 @@ $conn->close();
 <html>
   <head>
     <title>Geolocation</title>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
     <link rel="stylesheet" href="./style/index.css">
+
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+    <script src="./scripts/jquery-3.6.0.min.js"></script>
+    <script src="./scripts/loadhtml.js"></script>
+
     <script>
       // Note: This example requires that you consent to location sharing when
       // prompted by your browser. If you see the error "The Geolocation service
@@ -127,6 +132,9 @@ $conn->close();
     </script>
   </head>
   <body>
+    <div class="navbar" id="navbar">
+    </div>
+
     <div id="map"></div>
 
     <!-- Async script executes immediately and must be after any DOM elements used in callback. -->

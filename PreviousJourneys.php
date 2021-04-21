@@ -15,7 +15,10 @@ function getCoordinatesAddress($AzureKey, $Latitude, $Longitude)
         curl_close($ch);
         $response=json_decode($response_json, true);
 
-        return $response["addresses"][0]["address"]["freeformAddress"];
+        if (isset($response["addresses"][0]["address"]["freeformAddress"]))
+        {
+            return $response["addresses"][0]["address"]["freeformAddress"];
+        }
     }
 }
 
@@ -55,9 +58,15 @@ if ($conn->connect_error) {
 <!DOCTYPE html>
 <html>
   <head>
-    
+    <link rel="stylesheet" href="./style/index.css">
+
+    <script src="./scripts/jquery-3.6.0.min.js"></script>
+    <script src="./scripts/loadhtml.js"></script>
   </head>
   <body>
+    <div class="navbar" id="navbar">
+    </div>
+
     <table>
         <tr>
             <th>journeyID</th>

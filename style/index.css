@@ -11,6 +11,7 @@ height: 100%;
 margin: 0;
 padding: 0;
 overflow: auto;
+font-family: sans-serif;
 
 }
 
@@ -42,3 +43,30 @@ iframe {
     float: left;
 
 }
+
+/* The navigation menu */
+.navbar {
+    overflow: hidden;
+    background-color: #333;
+  }
+
+/* Navigation links */
+.navbar a {
+float: left;
+font-size: 16px;
+color: white;
+text-align: center;
+padding: 14px 16px;
+text-decoration: none;
+}
+
+/* Add a red background color to navigation links on hover */
+.navbar a:hover, .subnav:hover .subnavbtn {
+    background-color: red;
+  }
+  
+
+th, td {    
+    padding-left: 0.5%;
+    padding-right: 0.5%;
+  }
