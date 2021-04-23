@@ -6,6 +6,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
   }
 
+  //gets all of journey data, including how many time the speed limit was exceeded for the journey 
   $sql = "SELECT DISTINCT 
         Journeys.*,
         COUNT(SpeedingOccurances.journeyID) as speedingCount, 
@@ -46,6 +47,8 @@ if ($conn->connect_error) {
     <script>
         $(document).ready(function (e)
         {
+            //replaces the latitude and longitude in HTML elements that have the class "CoordinatesAddress" with an actual physical address
+            //this is done through a AJAX request to server script
             $('.CoordinatesAddress').each(function(i, obj) {
                 console.log(obj);
 
@@ -101,6 +104,8 @@ if ($conn->connect_error) {
             
             if ($row["speedingCount"] > 0)
             {
+                //if a journey has speeding incidents
+                //generate a hyperlink that the user can use to view the speeding incident details through
                 echo "<a href='./SpeedingIncidents.php?journeyID=" . $row["journeyID"] . "'><p>View Incidents</p></a>";
             }
             

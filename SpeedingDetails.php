@@ -3,7 +3,7 @@
 
     $speedingOccuranceID = $_GET["speedingOccuranceID"];
 
-    #Get SpeedingOccurances data for a provided speedingOccuranceID
+    //Get SpeedingOccurances data for a provided speedingOccuranceID
     $sql = "SELECT SpeedingOccurances.* 
     FROM 
         SpeedingOccurances  
@@ -36,27 +36,12 @@
         <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
         <script src="./scripts/jquery-3.6.0.min.js"></script>
         <link rel="stylesheet" href="./style/index.css">
+        <script src="./scripts/mapsAPIFunctions.js"></script>
 
         <script>
 
         //maps api code taken and modified from: https://developers.google.com/maps/documentation/javascript/overview
         let map, infoWindow;
-
-        function centerMapAtLocation(lat, lng)
-        {
-            const center = new google.maps.LatLng(lat, lng);
-            map.panTo(center);
-        }
-
-        function addNewMarker(latitude, longitude)
-        {
-            new google.maps.Marker({
-                position: { lat: parseFloat(latitude), lng: parseFloat(longitude) },
-                center: { lat: -37.8072, lng: 145.154 },
-                map,
-                title: "Start Location",
-            });
-        }
 
         //makes an AJAX request, getting speeding data from server script
         //once server script is returned
@@ -71,6 +56,9 @@
 
                 var locationsArray = JSON.parse(result);
                 
+                //for all return locations from the server ajaz request
+                //markers are placed on map, and map is centered on the location
+                //server request should only ever return ONE location
                 locationsArray.forEach(function(element){
                     addNewMarker(element[0], element[1]);   
                     centerMapAtLocation(element[0], element[1]);
@@ -121,6 +109,7 @@
             }
             });
 
+            //centers map on speeding occurance location and places a marker in the speeding position
             getLocationData();
         }
 
@@ -138,7 +127,6 @@
     <body>
         <div id="map"></div>
 
-        <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
         <script
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBedQ99BuDCvtKbnHOX9haF-EtkpMJS8wk&callback=initMap&libraries=&v=weekly"
         async

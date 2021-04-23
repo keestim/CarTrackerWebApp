@@ -9,6 +9,7 @@
         <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
 
         <link rel="stylesheet" href="./style/index.css">
+        <script src="./scripts/mapsAPIFunctions.js"></script>
 
         <script>
         //maps api code taken and modified from: https://developers.google.com/maps/documentation/javascript/overview
@@ -18,21 +19,6 @@
         // failed.", it means you probably did not give permission for the browser to
         // locate you.
         let map, infoWindow;
-
-        function centerMapAtLocation(lat, lng)
-        {
-            const center = new google.maps.LatLng(lat, lng);
-            map.panTo(center);
-        }
-
-        function addNewMarker(map, latitude, longitude)
-        {
-            new google.maps.Marker({
-                position: { lat: parseFloat(latitude), lng: parseFloat(longitude) },
-                map,
-                title: "Start Location",
-            });
-        }
 
         function getLocationData(map)
         {

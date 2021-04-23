@@ -8,6 +8,7 @@
 
     <script src="./scripts/jquery-3.6.0.min.js"></script>
     <script src="./scripts/loadhtml.js"></script>
+    <script src="./scripts/mapsAPIFunctions.js"></script>
 
     <script>
       //maps api code taken and modified from: https://developers.google.com/maps/documentation/javascript/overview
@@ -18,25 +19,6 @@
       // locate you.
       let map, infoWindow;
       var lastKnownDetails, lastStartDetails, lastPositionMarker, lastStartPositionMarker;
-
-      function centerMapAtLocation(lat, lng)
-      {
-        const center = new google.maps.LatLng(lat, lng);
-        map.panTo(center);
-      }
-
-      function moveToLocation(lat, lng){
-        centerMapAtLocation(lat, lng);
-        addMarker(lat, lng);
-      }
-
-      function addMarker(latitude, longitude, titleMsg = ""){
-        return new google.maps.Marker({
-          position: { lat: parseFloat(latitude), lng: parseFloat(longitude) },
-          map,
-          title: titleMsg,
-        });
-      }
 
       function getLastJourneyStartDetails()
       {
@@ -193,7 +175,6 @@
 
     <div id="map"></div>
 
-    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
     <script
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBedQ99BuDCvtKbnHOX9haF-EtkpMJS8wk&callback=initMap&libraries=&v=weekly"
       async
