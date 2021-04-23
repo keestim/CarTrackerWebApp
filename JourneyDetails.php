@@ -28,6 +28,8 @@
             $.ajax({url: "./GetJourneyLocations.php?journeyID=" + journeyID, success: function(result){
                 var locationsArray = JSON.parse(result);
                 
+                console.log(locationsArray[0][0] + "|" +  locationsArray[0][1]);
+
                 //center map on first position:
                 centerMapAtLocation(locationsArray[0][0], locationsArray[0][1]);
 
