@@ -12,6 +12,13 @@
 
         <script>
         //maps api code taken and modified from: https://developers.google.com/maps/documentation/javascript/overview
+
+        function centerMapAtLocation(lat, lng)
+        {
+            const center = new google.maps.LatLng(lat, lng);
+            map.panTo(center);
+        }
+
         function getLocationData(map)
         {
             var journeyID = location.search.split('journeyID=')[1];
@@ -21,8 +28,11 @@
             $.ajax({url: "./GetJourneyLocations.php?journeyID=" + journeyID, success: function(result){
                 var locationsArray = JSON.parse(result);
                 
+                //center map on first position:
+                centerMapAtLocation(locationsArray[0][0], locationsArray[0][1]);
+
                 locationsArray.forEach(
-                    element => addNewMarker(map, element[0], element[1])   
+                    element => addNewMarker(map, element[0], element[1]);   
                 );
             }});
         }

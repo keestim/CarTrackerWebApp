@@ -58,7 +58,8 @@
             });
         }
 
-        //new server script to get speeding location!
+        //makes an AJAX request, getting speeding data from server script
+        //once server script is returned
         function getLocationData()
         {
             var speedingOccuranceID = location.search.split('speedingOccuranceID=')[1];
@@ -71,7 +72,6 @@
                 var locationsArray = JSON.parse(result);
                 
                 locationsArray.forEach(function(element){
-                    console.log("Long" + element[1]);
                     addNewMarker(element[0], element[1]);   
                     centerMapAtLocation(element[0], element[1]);
                     }
