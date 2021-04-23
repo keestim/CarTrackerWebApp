@@ -7,6 +7,8 @@
         die("Connection failed: " . $conn->connect_error);
     }
 
+    //gets all of the different locations that were visited for a specified journey
+    //the journey is specified via a journeyID that is pass in via a GET variable in the URL
     $sql = "SELECT DISTINCT 
             JourneyDetails.longitude, JourneyDetails.latitude 
         FROM

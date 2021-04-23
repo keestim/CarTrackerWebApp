@@ -5,6 +5,7 @@
         die("Connection failed: " . $conn->connect_error);
     }
 
+    //gets the location of a speeding occurance, from a provided speedingOccuranceID
     $speedingOccuranceID = $_GET['speedingOccuranceID'];
 
     $sql = "SELECT 

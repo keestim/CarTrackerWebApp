@@ -1,6 +1,7 @@
 <?php
     REQUIRE './SQLConnection.php';
 
+    #gets all of the SpeedingOccurances records from the database, that have the same journeyID as the journeyID get variable
     $journeyID = $_GET["journeyID"];
 
     $sql = "SELECT SpeedingOccurances.* 
@@ -29,13 +30,10 @@
         
     if ($result->num_rows > 0) {
         // output data of each row
-        while($row = $result->fetch_assoc()) {
-            //print_r($row);
-            //echo "<br/>";
-            echo "<iframe src='./SpeedingDetails.php?speedingOccuranceID=" . $row["speedingOccuranceID"] . "'>View Info " . $row["speedingOccuranceID"] . "'></iframe>";
 
-            //echo "<a href='./SpeedingDetails.php?speedingOccuranceID=" . $row["speedingOccuranceID"] . "'>View Info " . $row["speedingOccuranceID"] . "</a>";
-            //echo "<br/>";
+        #loops through all speedingOccuranceID values, are renders a iFrame of the page SpeedingDetails.php, provide the relevant speedingOccuranceID value 
+        while($row = $result->fetch_assoc()) {
+            echo "<iframe src='./SpeedingDetails.php?speedingOccuranceID=" . $row["speedingOccuranceID"] . "'>View Info " . $row["speedingOccuranceID"] . "'></iframe>";
         }
     } else {
     echo "0 results";
