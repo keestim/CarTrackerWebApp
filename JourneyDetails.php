@@ -6,12 +6,12 @@
         <script src="./scripts/jquery-3.6.0.min.js"></script>
         <script src="./scripts/loadhtml.js"></script>
 
-
         <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
 
         <link rel="stylesheet" href="./style/index.css">
 
         <script>
+        //maps api code taken and modified from: https://developers.google.com/maps/documentation/javascript/overview
         function getLocationData(map)
         {
             var journeyID = location.search.split('journeyID=')[1];
@@ -44,7 +44,6 @@
 
         function initMap() {
             const map = new google.maps.Map(document.getElementById("map"), {
-            center: { lat: -37.8072, lng: 145.154 },
             zoom: 14,
             });
 

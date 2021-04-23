@@ -10,6 +10,8 @@
     <script src="./scripts/loadhtml.js"></script>
 
     <script>
+      //maps api code taken and modified from: https://developers.google.com/maps/documentation/javascript/overview
+
       // Note: This example requires that you consent to location sharing when
       // prompted by your browser. If you see the error "The Geolocation service
       // failed.", it means you probably did not give permission for the browser to

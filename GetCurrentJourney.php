@@ -5,6 +5,7 @@
         die("Connection failed: " . $conn->connect_error);
     }
 
+    //gets all of the journey data for the most recently recorded journey in the system
     $sql = "SELECT 
             Journeys.*
         FROM

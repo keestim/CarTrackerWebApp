@@ -1,4 +1,7 @@
 <?php
+    //page that generates a graph, either RPM vs Time OR Speed vs Time
+    //from a provided journey ID in get variable
+
     require_once("./phpLibs/phpChart/conf.php");
     REQUIRE './SQLConnection.php';
 
@@ -44,7 +47,6 @@
             $pc = new C_PhpChartX(array($timeArray, $rpmArray),'chart');
             break;   
     }
-
     
     switch ($graphType){
         case "speed":
@@ -82,7 +84,6 @@
     $pc->draw(560,400);
 
 ?>
-
 
 <html>
     <head>

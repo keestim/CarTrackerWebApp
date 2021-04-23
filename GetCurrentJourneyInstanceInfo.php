@@ -5,6 +5,8 @@
         die("Connection failed: " . $conn->connect_error);
     }
 
+
+    //gets all of the journey information for most recent record for the most recently recorded journey
     $sql = "SELECT 
             JourneyDetails.*
         FROM

@@ -8,6 +8,7 @@
     {
         if ($Latitude != "" && $Longitude != "")
         {
+            #microsoft api returns physical address of a location, from a provided latitude and longitude
             $url = "https://atlas.microsoft.com/search/address/reverse/json?subscription-key=" . $AzureKey . "&api-version=1.0&query=" . $Latitude . "," . $Longitude . "&returnSpeedLimit=true";
 
             $ch = curl_init($url);
