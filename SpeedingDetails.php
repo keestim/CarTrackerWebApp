@@ -49,11 +49,7 @@
         {
             var speedingOccuranceID = location.search.split('speedingOccuranceID=')[1];
 
-            console.log(speedingOccuranceID);
-
             $.ajax({url: "./GetSpeedingLocation.php?speedingOccuranceID=" + speedingOccuranceID, success: function(result){
-                console.log(result);
-
                 var locationsArray = JSON.parse(result);
                 
                 //for all return locations from the server ajaz request
@@ -74,7 +70,6 @@
 
         function initMap() {
             map = new google.maps.Map(document.getElementById("map"), {
-                center: { lat: -37.8072, lng: 145.154 },
                 zoom: 14,
             });
 
