@@ -215,7 +215,5 @@
         <p>Physical Address: <span id="current_address"></span></p>
     </div>    
 
-    <p><em>Potentially add something about speeding?</em></p>
-
   </body>
 </html>
