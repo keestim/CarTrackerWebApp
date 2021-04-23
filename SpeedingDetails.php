@@ -60,7 +60,7 @@
                 //markers are placed on map, and map is centered on the location
                 //server request should only ever return ONE location
                 locationsArray.forEach(function(element){
-                    addNewMarker(element[0], element[1]);   
+                    addMarker(element[0], element[1]);   
                     centerMapAtLocation(element[0], element[1]);
                     }
                 );

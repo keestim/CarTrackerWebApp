@@ -33,7 +33,7 @@
                 centerMapAtLocation(locationsArray[0][0], locationsArray[0][1]);
 
                 locationsArray.forEach(
-                    element => addNewMarker(map, element[0], element[1])   
+                    element => addMarker(element[0], element[1])   
                 );
             }
             });
