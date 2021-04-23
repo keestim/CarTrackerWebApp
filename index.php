@@ -20,6 +20,7 @@
       let map, infoWindow;
       var lastKnownDetails, lastStartDetails, lastPositionMarker, lastStartPositionMarker;
 
+      //makes an ajax request to the server to get the start position of the last record journey from the system
       function getLastJourneyStartDetails()
       {
 
@@ -28,10 +29,12 @@
         }});
       }
 
+      //updates Google Maps API Map and HTML according to updated start position
       function setLastJourneyStartDetails()
       {
         if (lastStartPositionMarker != undefined)
         {
+          //position is only updated IF the position changes
           if (lastStartPositionMarker.getPosition().lat() != window.lastStartDetails["startLatitude"] && 
             lastStartPositionMarker.getPosition().lng() != window.lastStartDetails["startLongitude"])
           {
@@ -44,21 +47,25 @@
           return;
         }
 
+        //if the variable which holds the start position marker is null/undefined, then a new marker will be created
         if (lastStartPositionMarker == undefined)
         {
           lastStartPositionMarker = addMarker(window.lastStartDetails["startLatitude"], window.lastStartDetails["startLongitude"]);
           moveToLocation(lastStartDetails["startLatitude"], lastStartDetails["startLongitude"]);
         }
 
+        //updates the HTML with the new data
         $("#start_latitude").text(window.lastStartDetails["startLatitude"]);
         $("#start_longitude").text(window.lastStartDetails["startLongitude"]);
         $("#start_time").text(window.lastStartDetails["startTime"]);
 
+        //makes ajax request, to get the physical address of these new coordinates
         $.ajax({url: "./GetCoordinateAPIAddress.php?latitude=" + window.lastStartDetails["startLatitude"] + "&longitude=" + window.lastStartDetails["startLongitude"], success: function(result){
           $("#start_address").text(result);
         }});
       }
-      
+
+      //makes an ajax request to the server to get the last recorded position from the system
       function getLastKnownDetails()
       {
         $.ajax({url: "./GetCurrentJourneyInstanceInfo.php", success: function(result){
@@ -66,6 +73,7 @@
         }});
       }
 
+      //updates Google Maps API Map and HTML according to updated vehicle position
       function setLastKnownPosition()
       {
         if (lastPositionMarker != undefined)
@@ -74,7 +82,7 @@
             lastPositionMarker.getPosition().lng() != window.lastKnownDetails["longitude"])
           {
             lastPositionMarker.setMap(null);
-	    lastPositionMarker = undefined;
+	          lastPositionMarker = undefined;
           }
         }
 
@@ -99,6 +107,7 @@
         }});
       }
 
+      //updates the last known position for the journey
       function updateLastKnownPosition()
       {
         setInterval(
@@ -108,6 +117,7 @@
           }, 2000);
       }
 
+      //updates the start positions of the journey
       function updateLastJourneyStartDetails()
       {
         setInterval(
@@ -153,6 +163,7 @@
           }
         });
 
+        //call functions, which will constantly update the current and start journey positions every 2 seconds
         updateLastJourneyStartDetails();
         updateLastKnownPosition();
       }
