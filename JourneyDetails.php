@@ -20,6 +20,8 @@
         // locate you.
         let map, infoWindow;
 
+        //gets locations of the journey, for the journey id provided in the journeyID get variable
+        //then adds all of the recorded positions to the google maps API map
         function getLocationData(map)
         {
             var journeyID = location.search.split('journeyID=')[1];
