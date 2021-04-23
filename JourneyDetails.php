@@ -13,10 +13,25 @@
         <script>
         //maps api code taken and modified from: https://developers.google.com/maps/documentation/javascript/overview
 
+        // Note: This example requires that you consent to location sharing when
+        // prompted by your browser. If you see the error "The Geolocation service
+        // failed.", it means you probably did not give permission for the browser to
+        // locate you.
+        let map, infoWindow;
+
         function centerMapAtLocation(lat, lng)
         {
             const center = new google.maps.LatLng(lat, lng);
             map.panTo(center);
+        }
+
+        function addNewMarker(map, latitude, longitude)
+        {
+            new google.maps.Marker({
+                position: { lat: parseFloat(latitude), lng: parseFloat(longitude) },
+                map,
+                title: "Start Location",
+            });
         }
 
         function getLocationData(map)
@@ -34,25 +49,11 @@
                 centerMapAtLocation(locationsArray[0][0], locationsArray[0][1]);
 
                 locationsArray.forEach(
-                    element => addNewMarker(map, element[0], element[1]);   
+                    element => addNewMarker(map, element[0], element[1])   
                 );
-            }});
-        }
-
-        function addNewMarker(map, latitude, longitude)
-        {
-            new google.maps.Marker({
-                position: { lat: parseFloat(latitude), lng: parseFloat(longitude) },
-                map,
-                title: "Start Location",
+            }
             });
         }
-
-        // Note: This example requires that you consent to location sharing when
-        // prompted by your browser. If you see the error "The Geolocation service
-        // failed.", it means you probably did not give permission for the browser to
-        // locate you.
-        let map, infoWindow;
 
         function initMap() {
             const map = new google.maps.Map(document.getElementById("map"), {
